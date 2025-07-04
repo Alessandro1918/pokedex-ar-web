@@ -15,7 +15,7 @@ export default function Home() {
     const form = new FormData()
     const file = inputRef.current?.files ? inputRef.current.files[0] : "-"
     form.append("file", file)
-    axios.post('http://localhost:3000/api/eval', form)
+    axios.post('http://localhost:5001/eval', form)
   }
 
   return (
@@ -30,7 +30,7 @@ export default function Home() {
       <input 
         ref={inputRef} 
         type="file" 
-        accept="image/*" 
+        accept="image/png, image/jpg" 
         onChange={handleFileChange}
       />
 
