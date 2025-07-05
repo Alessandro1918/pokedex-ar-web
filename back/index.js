@@ -6,7 +6,8 @@ import fs from 'fs'
 import cors from 'cors'
 import 'dotenv/config'
 
-const app = express()
+//Deploy @ Vercel: export this here, to import inside ”/api”:
+export const app = express()
 const port = 5001
 
 app.use(cors({
@@ -16,6 +17,8 @@ app.use(cors({
 
 // Set up multer for image upload
 const upload = multer({ dest: 'uploads/' })
+
+app.get("/", (req, res) => {res.send("Hello, world!")})
 
 app.post('/api/eval', upload.single('file'), async (req, res) => {
   if (!req.file) {
