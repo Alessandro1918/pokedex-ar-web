@@ -6,8 +6,7 @@ import fs from 'fs'
 import cors from 'cors'
 import 'dotenv/config'
 
-//Deploy @ Vercel: export this here, to import inside ”/api”:
-export const app = express()
+const app = express()
 const port = 5001
 
 app.use(cors({
