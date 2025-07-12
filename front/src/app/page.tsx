@@ -21,7 +21,7 @@ export default function Home() {
     const form = new FormData()
     const file = inputRef.current?.files ? inputRef.current.files[0] : "-"
     form.append("file", file)
-    const data = axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/eval`, form)
+    const data = axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/v1/id`, form)
     setPrediction((await data).data.prediction)
   }
 
