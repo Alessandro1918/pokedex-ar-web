@@ -1,5 +1,5 @@
 "use client"
-import { useState, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 
 type PredictionResponse = {
   prediction: {
@@ -8,12 +8,61 @@ type PredictionResponse = {
   }
 }
 
+type LocalStorageProps = {
+  name: string,
+  date: string,
+  image: string
+}
+
 export default function Home() {
 
   const inputRef = useRef<HTMLInputElement>(null)
   const [ selectedFile, setSelectedFile ] = useState<string>()
   const [ result, setResult ] = useState<string | null>(null)
+  const [ history, setHistory ] = useState<LocalStorageProps[] | null>(null)
   const [ isLoading, setIsLoading ] = useState(false)
+
+  useEffect(() => {
+    const history = getHistory()
+    setHistory(history)
+  }, [])
+
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          resolve(reader.result)
+        } else {
+          reject(new Error("FileReader result is not a string."))
+        }
+      }
+      reader.onerror = (error) => reject(error)
+    })
+  }
+
+  function getHistory(): LocalStorageProps[] {
+    const history = localStorage.getItem("history")
+    if (history) {
+      return JSON.parse(history)
+    } else { 
+      return [] 
+    }
+  }
+
+  function saveHistory(name: string, imageAsBase64: string) {
+    const history = getHistory()
+    const index = history.findIndex((e: LocalStorageProps) => e.name == name)
+    const newHistory = [...history]
+    if (index == -1) {
+      newHistory.push({name, date: new Date().toISOString(), image: imageAsBase64})
+    } else {
+      newHistory[index] = {name, date: new Date().toISOString(), image: imageAsBase64}
+    }
+    localStorage.setItem("history", JSON.stringify(newHistory))
+    setHistory(newHistory)
+  }
 
   function handleFileChange(e: any) {
     setSelectedFile(URL.createObjectURL(e.target.files[0]))
@@ -24,7 +73,10 @@ export default function Home() {
     try {
       setResult(null)
       const form = new FormData()
-      const file = inputRef.current?.files ? inputRef.current.files[0] : "-"
+      if (!inputRef.current || !inputRef.current.files || !inputRef.current.files[0]) {
+        throw new Error("400")
+      }
+      const file = inputRef.current.files[0]
       form.append("file", file)
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACK_URL}/api/v1/id`,
@@ -39,6 +91,7 @@ export default function Home() {
       }
       const result: PredictionResponse = await response.json()
       setResult(`${result.prediction.label} (${(100 * result.prediction.accuracy).toFixed(2)}%)`)
+      saveHistory(result.prediction.label, await convertToBase64(file))
     } catch (err: any) {
       if (err.message == "400") { setResult("Error: No file") }
       if (err.message == "404") { setResult("Error: Pokemon not found") }
@@ -92,6 +145,24 @@ export default function Home() {
       {
         result &&
         <h1>{result}</h1>
+      }
+
+      {
+        history &&
+        history.map((e: LocalStorageProps) => {
+          return (
+            <div 
+              key={e.name}
+              className="flex flex-row items-center gap-2"
+            >
+              <h3 >{`${e.name} - ${e.date}`}</h3>
+              <img
+                src={e.image}
+                className="size-8 aspect-auto bg-gray-200"
+              />
+            </div>
+          )
+        })
       }
     </div>
   )
