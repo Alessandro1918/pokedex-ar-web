@@ -53,7 +53,6 @@ export default function Home() {
   }
 
   function saveHistory(name: string, imageAsBase64: string) {
-    const history = getHistory()
     const index = history.findIndex((e: LocalStorageItem) => e.name == name)
     const newHistory = [...history]
     if (index == -1) {
@@ -102,7 +101,7 @@ export default function Home() {
       setResult(`${result.prediction.label} (${(100 * result.prediction.accuracy).toFixed(2)}%)`)
       saveHistory(result.prediction.label, await convertToBase64(file))
     } catch (err: any) {
-      switch (err) {
+      switch (err.message) {
         case "400": setResult("Error: No file"); break;
         case "404": setResult("Error: Pokemon not found"); break;
         default: setResult("Error: Internal server error")

@@ -7,117 +7,7 @@ type Props = {
 
 export function History({ history, handleDelete }: Props) {
 
-  const gen1 = [
-    "Bulbasaur",
-    "Ivysaur",
-    "Venusaur",
-    "Charmander",
-    "Charmeleon",
-    "Charizard",
-    "Squirtle",
-    "Wartortle",
-    "Blastoise",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-  ]
+  const gen1 = require("../../../public/data/gen1.json")
 
   // return (
   //   history.map((e: LocalStorageItem) => {
@@ -147,27 +37,22 @@ export function History({ history, handleDelete }: Props) {
             key={i}
             className="relative flex items-center justify-center size-12 bg-slate-400 rounded-lg"
           >
-            {/* {
-              index && index > -1
-              ? <p className="absolute text-green-700">{i+1}</p>
-              : <p className="absolute text-red-600">{i+1}</p>
-            } */}
             {
-              index && index > -1
-              ?
+              index > -1
+              ? // Already found: display image from History
                 <>
                   <img
                     src={history[index].image}
                     className="rounded-lg"
                   />
                   <button 
-                    onClick={() => handleDelete(history[index].image)}
+                    onClick={() => handleDelete(history[index].name)}
                     className="absolute top-0 right-0 cursor-pointer"
                   >
                     D
                   </button>
                 </>
-              :
+              : // Never found: display black-and-white asset shadow
                 <>
                   <img
                     src={`./assets/sprites/${i+1}.png`}
