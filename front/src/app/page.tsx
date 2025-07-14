@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { History } from "./components/history"
 
 type PredictionResponse = {
@@ -20,13 +20,8 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null)
   const [ selectedFile, setSelectedFile ] = useState<string>()
   const [ result, setResult ] = useState<string | null>(null)
-  const [ history, setHistory ] = useState<LocalStorageItem[]>([])
   const [ isLoading, setIsLoading ] = useState(false)
-
-  useEffect(() => {
-    const history = getHistory()
-    setHistory(history)
-  }, [])
+  const [ historyKey, setHistoryKey ] = useState(0)
 
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -53,6 +48,7 @@ export default function Home() {
   }
 
   function saveHistory(name: string, imageAsBase64: string) {
+    const history = getHistory()
     const index = history.findIndex((e: LocalStorageItem) => e.name == name)
     const newHistory = [...history]
     if (index == -1) {
@@ -61,15 +57,6 @@ export default function Home() {
       newHistory[index] = {name, date: new Date().toISOString(), image: imageAsBase64}
     }
     localStorage.setItem("history", JSON.stringify(newHistory))
-    setHistory(newHistory)
-  }
-
-  function handleDelete(name: string) {
-    const newHistory = [...history]
-    const index = newHistory.findIndex((e: LocalStorageItem) => e.name == name)
-    newHistory.splice(index, 1)
-    localStorage.setItem("history", JSON.stringify(newHistory))
-    setHistory(newHistory)
   }
 
   function handleInputFileChange(e: any) {
@@ -98,8 +85,12 @@ export default function Home() {
         throw new Error(String(response.status))
       }
       const result: PredictionResponse = await response.json()
-      setResult(`${result.prediction.label} (${(100 * result.prediction.accuracy).toFixed(2)}%)`)
-      saveHistory(result.prediction.label, await convertToBase64(file))
+      const label = result.prediction.label
+      const accuracy = (100 * result.prediction.accuracy).toFixed(2)
+      setResult(`${label} (${accuracy}%)`)
+      const imageAsBase64 = await convertToBase64(file)
+      saveHistory(label, imageAsBase64)
+      setHistoryKey(historyKey + 1) // force History reload. Will be removed when History is moved to it's own separate page
     } catch (err: any) {
       switch (err.message) {
         case "400": setResult("Error: No file"); break;
@@ -158,7 +149,10 @@ export default function Home() {
         <h1>{result}</h1>
       }
 
-      <History history={history} handleDelete={handleDelete}/>
+      <History 
+        key={historyKey} 
+        getHistory={getHistory}
+      />
     </div>
   )
 }

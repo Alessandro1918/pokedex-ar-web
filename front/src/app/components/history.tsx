@@ -1,13 +1,21 @@
+import { useState, useEffect } from "react"
 import { LocalStorageItem } from "../page"
+import { Generation } from "./history-generation"
+import gen1 from "../../../public/data/gen1.json"
+import gen2 from "../../../public/data/gen2.json"
 
 type Props = {
-  history: LocalStorageItem[]
-  handleDelete(name: string): void
+  getHistory(): LocalStorageItem[]
 }
 
-export function History({ history, handleDelete }: Props) {
+export function History({ getHistory }: Props) {
 
-  const gen1 = require("../../../public/data/gen1.json")
+  const [ history, setHistory ] = useState<LocalStorageItem[]>([])
+
+  useEffect(() => {
+    const history = getHistory()
+    setHistory(history)
+  }, [])
 
   // return (
   //   history.map((e: LocalStorageItem) => {
@@ -26,47 +34,21 @@ export function History({ history, handleDelete }: Props) {
   // )
 
   return (
-    <div className="grid grid-cols-5 gap-2 h-96 overflow-auto">
-
-      {gen1.map((name: string, i: number) => {
-
-        const index = history.findIndex((e: LocalStorageItem) => e.name == name)
-
-        return (
-          <div 
-            key={i}
-            className="relative flex items-center justify-center size-12 bg-slate-400 rounded-lg"
-          >
-            {
-              index > -1
-              ? // Already found: display image from History
-                <>
-                  <img
-                    src={history[index].image}
-                    className="rounded-lg"
-                  />
-                  <button 
-                    onClick={() => handleDelete(history[index].name)}
-                    className="absolute top-0 right-0 cursor-pointer"
-                  >
-                    D
-                  </button>
-                </>
-              : // Never found: display black-and-white asset shadow
-                <>
-                  <img
-                    src={`./assets/sprites/${i+1}.png`}
-                    className="size-full object-cover brightness-0 rounded-lg"
-                  />
-                  <div className="absolute size-12 bg-blue-600 mix-blend-screen rounded-lg"></div>
-                  <p className="absolute text-xl zfont-bold text-blue-100 opacity-40">
-                    {i+1}
-                  </p>
-                </>
-            }
-          </div>
-        )
-      })}
+    <div className="h-96 overflow-auto">
+      <Generation 
+        title="Kanto"
+        names={gen1}
+        startIndex={1}
+        history={history} 
+        setHistory={setHistory} 
+      />
+      <Generation 
+        title="Johto"
+        names={gen2}
+        startIndex={152}
+        history={history} 
+        setHistory={setHistory} 
+      />
     </div>
   )
 }
