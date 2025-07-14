@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
+import { History } from "./components/history"
 
 type PredictionResponse = {
   prediction: {
@@ -8,7 +9,7 @@ type PredictionResponse = {
   }
 }
 
-type LocalStorageProps = {
+export type LocalStorageItem = {
   name: string,
   date: string,
   image: string
@@ -19,7 +20,7 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null)
   const [ selectedFile, setSelectedFile ] = useState<string>()
   const [ result, setResult ] = useState<string | null>(null)
-  const [ history, setHistory ] = useState<LocalStorageProps[] | null>(null)
+  const [ history, setHistory ] = useState<LocalStorageItem[]>([])
   const [ isLoading, setIsLoading ] = useState(false)
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function Home() {
     })
   }
 
-  function getHistory(): LocalStorageProps[] {
+  function getHistory(): LocalStorageItem[] {
     const history = localStorage.getItem("history")
     if (history) {
       return JSON.parse(history)
@@ -53,7 +54,7 @@ export default function Home() {
 
   function saveHistory(name: string, imageAsBase64: string) {
     const history = getHistory()
-    const index = history.findIndex((e: LocalStorageProps) => e.name == name)
+    const index = history.findIndex((e: LocalStorageItem) => e.name == name)
     const newHistory = [...history]
     if (index == -1) {
       newHistory.push({name, date: new Date().toISOString(), image: imageAsBase64})
@@ -64,7 +65,15 @@ export default function Home() {
     setHistory(newHistory)
   }
 
-  function handleFileChange(e: any) {
+  function handleDelete(name: string) {
+    const newHistory = [...history]
+    const index = newHistory.findIndex((e: LocalStorageItem) => e.name == name)
+    newHistory.splice(index, 1)
+    localStorage.setItem("history", JSON.stringify(newHistory))
+    setHistory(newHistory)
+  }
+
+  function handleInputFileChange(e: any) {
     setSelectedFile(URL.createObjectURL(e.target.files[0]))
   }
 
@@ -93,8 +102,11 @@ export default function Home() {
       setResult(`${result.prediction.label} (${(100 * result.prediction.accuracy).toFixed(2)}%)`)
       saveHistory(result.prediction.label, await convertToBase64(file))
     } catch (err: any) {
-      if (err.message == "400") { setResult("Error: No file") }
-      if (err.message == "404") { setResult("Error: Pokemon not found") }
+      switch (err) {
+        case "400": setResult("Error: No file"); break;
+        case "404": setResult("Error: Pokemon not found"); break;
+        default: setResult("Error: Internal server error")
+      }
     }
     setIsLoading(false)
   }
@@ -111,7 +123,7 @@ export default function Home() {
         ref={inputRef} 
         type="file" 
         accept="image/png, image/jpg, image/jpeg" 
-        onChange={handleFileChange}
+        onChange={handleInputFileChange}
       />
 
       <button 
@@ -147,23 +159,7 @@ export default function Home() {
         <h1>{result}</h1>
       }
 
-      {
-        history &&
-        history.map((e: LocalStorageProps) => {
-          return (
-            <div 
-              key={e.name}
-              className="flex flex-row items-center gap-2"
-            >
-              <h3 >{`${e.name} - ${e.date}`}</h3>
-              <img
-                src={e.image}
-                className="size-8 aspect-auto bg-gray-200"
-              />
-            </div>
-          )
-        })
-      }
+      <History history={history} handleDelete={handleDelete}/>
     </div>
   )
 }
