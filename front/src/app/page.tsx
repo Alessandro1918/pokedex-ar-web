@@ -1,5 +1,6 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
+import { History } from "./components/history"
 
 type PredictionResponse = {
   prediction: {
@@ -8,7 +9,7 @@ type PredictionResponse = {
   }
 }
 
-type LocalStorageProps = {
+export type LocalStorageItem = {
   name: string,
   date: string,
   image: string
@@ -19,13 +20,8 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null)
   const [ selectedFile, setSelectedFile ] = useState<string>()
   const [ result, setResult ] = useState<string | null>(null)
-  const [ history, setHistory ] = useState<LocalStorageProps[] | null>(null)
   const [ isLoading, setIsLoading ] = useState(false)
-
-  useEffect(() => {
-    const history = getHistory()
-    setHistory(history)
-  }, [])
+  const [ historyKey, setHistoryKey ] = useState(0)
 
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -42,7 +38,7 @@ export default function Home() {
     })
   }
 
-  function getHistory(): LocalStorageProps[] {
+  function getHistory(): LocalStorageItem[] {
     const history = localStorage.getItem("history")
     if (history) {
       return JSON.parse(history)
@@ -53,7 +49,7 @@ export default function Home() {
 
   function saveHistory(name: string, imageAsBase64: string) {
     const history = getHistory()
-    const index = history.findIndex((e: LocalStorageProps) => e.name == name)
+    const index = history.findIndex((e: LocalStorageItem) => e.name == name)
     const newHistory = [...history]
     if (index == -1) {
       newHistory.push({name, date: new Date().toISOString(), image: imageAsBase64})
@@ -61,10 +57,9 @@ export default function Home() {
       newHistory[index] = {name, date: new Date().toISOString(), image: imageAsBase64}
     }
     localStorage.setItem("history", JSON.stringify(newHistory))
-    setHistory(newHistory)
   }
 
-  function handleFileChange(e: any) {
+  function handleInputFileChange(e: any) {
     setSelectedFile(URL.createObjectURL(e.target.files[0]))
   }
 
@@ -90,11 +85,18 @@ export default function Home() {
         throw new Error(String(response.status))
       }
       const result: PredictionResponse = await response.json()
-      setResult(`${result.prediction.label} (${(100 * result.prediction.accuracy).toFixed(2)}%)`)
-      saveHistory(result.prediction.label, await convertToBase64(file))
+      const label = result.prediction.label
+      const accuracy = (100 * result.prediction.accuracy).toFixed(2)
+      setResult(`${label} (${accuracy}%)`)
+      const imageAsBase64 = await convertToBase64(file)
+      saveHistory(label, imageAsBase64)
+      setHistoryKey(historyKey + 1) // force History reload. Will be removed when History is moved to it's own separate page
     } catch (err: any) {
-      if (err.message == "400") { setResult("Error: No file") }
-      if (err.message == "404") { setResult("Error: Pokemon not found") }
+      switch (err.message) {
+        case "400": setResult("Error: No file"); break;
+        case "404": setResult("Error: Pokemon not found"); break;
+        default: setResult("Error: Internal server error")
+      }
     }
     setIsLoading(false)
   }
@@ -111,7 +113,7 @@ export default function Home() {
         ref={inputRef} 
         type="file" 
         accept="image/png, image/jpg, image/jpeg" 
-        onChange={handleFileChange}
+        onChange={handleInputFileChange}
       />
 
       <button 
@@ -147,23 +149,10 @@ export default function Home() {
         <h1>{result}</h1>
       }
 
-      {
-        history &&
-        history.map((e: LocalStorageProps) => {
-          return (
-            <div 
-              key={e.name}
-              className="flex flex-row items-center gap-2"
-            >
-              <h3 >{`${e.name} - ${e.date}`}</h3>
-              <img
-                src={e.image}
-                className="size-8 aspect-auto bg-gray-200"
-              />
-            </div>
-          )
-        })
-      }
+      <History 
+        key={historyKey} 
+        getHistory={getHistory}
+      />
     </div>
   )
 }
