@@ -59,8 +59,10 @@ export default function Home() {
     localStorage.setItem("history", JSON.stringify(newHistory))
   }
 
-  function handleInputFileChange(e: any) {
-    setSelectedFile(URL.createObjectURL(e.target.files[0]))
+  function handleInputFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files) return
+    const file = e.target.files[0]
+    setSelectedFile(URL.createObjectURL(file))
   }
 
   async function handleSubmit() {
@@ -69,7 +71,7 @@ export default function Home() {
       setResult(null)
       const form = new FormData()
       if (!inputRef.current || !inputRef.current.files || !inputRef.current.files[0]) {
-        throw new Error("400")
+        throw new Error("400")  // Bad request
       }
       const file = inputRef.current.files[0]
       form.append("file", file)
@@ -106,7 +108,7 @@ export default function Home() {
 
       <img 
         src={selectedFile}
-        className="size-24 aspect-auto bg-gray-400"
+        className="size-24 aspect-square object-cover bg-gray-300"
       />
 
       <input 

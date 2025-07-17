@@ -40,7 +40,7 @@ export function Generation({ title, names, startIndex, history, setHistory }: Pr
                   <>
                     <img
                       src={history[index].image}
-                      className="rounded-lg"
+                      className="size-full object-cover rounded-lg"
                     />
                     <button 
                       onClick={() => handleDelete(history[index].name)}
