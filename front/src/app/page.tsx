@@ -23,7 +23,7 @@ export default function Home() {
   const [ isLoading, setIsLoading ] = useState(false)
   const [ historyKey, setHistoryKey ] = useState(0)
 
-  const convertToBase64 = (file: File): Promise<string> => {
+  function convertToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
       reader.readAsDataURL(file)
@@ -35,6 +35,31 @@ export default function Home() {
         }
       }
       reader.onerror = (error) => reject(error)
+    })
+  }
+
+  //https://kutia.net/resizing-base64-images-with-javascript-a-snap-to-scale/
+  function resizeBase64Image(base64Image: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const maxSizeInKB = 50
+      const maxSizeInBytes = maxSizeInKB * 1024
+      const img = new Image()
+      img.src = base64Image
+      img.onload = function () {
+        const canvas = document.createElement("canvas")
+        const ctx = canvas.getContext("2d")
+        const width = img.width
+        const height = img.height
+        const aspectRatio = width / height
+        const newWidth = Math.sqrt(maxSizeInBytes * aspectRatio)
+        const newHeight = Math.sqrt(maxSizeInBytes / aspectRatio)
+        canvas.width = newWidth
+        canvas.height = newHeight
+        ctx!.drawImage(img, 0, 0, newWidth, newHeight)
+        let quality = 0.7
+        let dataURL = canvas.toDataURL("image/jpeg", quality)
+        resolve(dataURL)
+      }
     })
   }
 
@@ -56,7 +81,13 @@ export default function Home() {
     } else {
       newHistory[index] = {name, date: new Date().toISOString(), image: imageAsBase64}
     }
-    localStorage.setItem("history", JSON.stringify(newHistory))
+    try {
+      localStorage.setItem("history", JSON.stringify(newHistory))
+    } catch (err: any) {
+      if (err.name == "QuotaExceededError") {
+        throw new Error("507")  // Insufficient Storage
+      }
+    }
   }
 
   function handleInputFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -69,11 +100,12 @@ export default function Home() {
     setIsLoading(true)
     try {
       setResult(null)
-      const form = new FormData()
       if (!inputRef.current || !inputRef.current.files || !inputRef.current.files[0]) {
         throw new Error("400")  // Bad request
       }
       const file = inputRef.current.files[0]
+      // console.log(`file size: ${Math.floor(file.size / 1024)} kB`)
+      const form = new FormData()
       form.append("file", file)
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACK_URL}/api/v1/id`,
@@ -90,13 +122,18 @@ export default function Home() {
       const label = result.prediction.label
       const accuracy = (100 * result.prediction.accuracy).toFixed(2)
       setResult(`${label} (${accuracy}%)`)
+
       const imageAsBase64 = await convertToBase64(file)
-      saveHistory(label, imageAsBase64)
+      // console.log(`base64 size: ${Math.floor(Math.ceil(imageAsBase64.length / 4) * 3 / 1024)} kB`)
+      const resizedImageAsBase64 = await resizeBase64Image(imageAsBase64)
+      // console.log(`resized base64 size: ${Math.floor(Math.ceil(resizedImageAsBase64.length / 4) * 3 / 1024)} kB`)
+      saveHistory(label, resizedImageAsBase64)
       setHistoryKey(historyKey + 1) // force History reload. Will be removed when History is moved to it's own separate page
     } catch (err: any) {
       switch (err.message) {
         case "400": setResult("Error: No file"); break;
         case "404": setResult("Error: Pokemon not found"); break;
+        case "507": setResult("Error: No localStorage space available"); break;
         default: setResult("Error: Internal server error")
       }
     }
