@@ -1,4 +1,5 @@
-import { LocalStorageItem } from "../page"
+import Link from "next/link"
+import { LocalStorageItem } from "../functions/history"
 
 type Props = {
   title: string,  // "Gen 2 - Johto"
@@ -37,23 +38,25 @@ export function Generation({ title, names, startIndex, history, setHistory }: Pr
               {
                 index > -1
                 ? // Already found: display image from History
-                  <>
-                    <img
-                      src={history[index].image}
-                      className="size-full object-cover rounded-lg"
-                    />
-                    <button 
-                      onClick={() => handleDelete(history[index].name)}
-                      className="absolute top-0 right-0 cursor-pointer"
-                    >
-                      D
-                    </button>
-                  </>
+                  <div className="size-full">
+                    <Link href={`/history/${name}`}>
+                      <img
+                        src={history[index].image}
+                        className="size-full object-cover rounded-lg"
+                      />
+                      <button 
+                        onClick={() => handleDelete(history[index].name)}
+                        className="absolute top-0 right-0 cursor-pointer"
+                      >
+                        D
+                      </button>
+                    </Link>
+                  </div>
                 : // Never found: display black-and-white asset shadow
                   <>
                     <img
                       src={`./assets/sprites/${i+startIndex}.png`}
-                      className="size-full object-cover brightness-0 rounded-lg"
+                      className="size-full object-cover rounded-lg brightness-0"
                     />
                     <div className="absolute size-12 bg-blue-600 mix-blend-screen rounded-lg"></div>
                     <p className="absolute text-xl zfont-bold text-blue-100 opacity-40">

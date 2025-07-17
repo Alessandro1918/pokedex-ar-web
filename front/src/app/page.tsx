@@ -1,5 +1,6 @@
 "use client"
 import { useState, useRef } from "react"
+import { getHistory, saveHistory } from "./functions/history"
 import { History } from "./components/history"
 
 type PredictionResponse = {
@@ -7,12 +8,6 @@ type PredictionResponse = {
     label: string,
     accuracy: number
   }
-}
-
-export type LocalStorageItem = {
-  name: string,
-  date: string,
-  image: string
 }
 
 export default function Home() {
@@ -61,33 +56,6 @@ export default function Home() {
         resolve(dataURL)
       }
     })
-  }
-
-  function getHistory(): LocalStorageItem[] {
-    const history = localStorage.getItem("history")
-    if (history) {
-      return JSON.parse(history)
-    } else { 
-      return [] 
-    }
-  }
-
-  function saveHistory(name: string, imageAsBase64: string) {
-    const history = getHistory()
-    const index = history.findIndex((e: LocalStorageItem) => e.name == name)
-    const newHistory = [...history]
-    if (index == -1) {
-      newHistory.push({name, date: new Date().toISOString(), image: imageAsBase64})
-    } else {
-      newHistory[index] = {name, date: new Date().toISOString(), image: imageAsBase64}
-    }
-    try {
-      localStorage.setItem("history", JSON.stringify(newHistory))
-    } catch (err: any) {
-      if (err.name == "QuotaExceededError") {
-        throw new Error("507")  // Insufficient Storage
-      }
-    }
   }
 
   function handleInputFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -190,7 +158,6 @@ export default function Home() {
 
       <History 
         key={historyKey} 
-        getHistory={getHistory}
       />
     </div>
   )

@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react"
-import { LocalStorageItem } from "../page"
+import { getHistory, LocalStorageItem } from "../functions/history"
 import { Generation } from "./history-generation"
 import gen1 from "../../../public/data/gen1.json"
 import gen2 from "../../../public/data/gen2.json"
 
-type Props = {
-  getHistory(): LocalStorageItem[]
-}
-
-export function History({ getHistory }: Props) {
+export function History() {
 
   const [ history, setHistory ] = useState<LocalStorageItem[]>([])
 
