@@ -11,14 +11,6 @@ type Props = {
 
 export function Generation({ title, names, startIndex, history, setHistory }: Props) {
 
-  function handleDelete(name: string) {
-    const newHistory = [...history]
-    const index = newHistory.findIndex((e: LocalStorageItem) => e.name == name)
-    newHistory.splice(index, 1)
-    localStorage.setItem("history", JSON.stringify(newHistory))
-    setHistory(newHistory)
-  }
-
   return (
     <div>
 
@@ -44,18 +36,12 @@ export function Generation({ title, names, startIndex, history, setHistory }: Pr
                         src={history[index].image}
                         className="size-full object-cover rounded-lg"
                       />
-                      <button 
-                        onClick={() => handleDelete(history[index].name)}
-                        className="absolute top-0 right-0 cursor-pointer"
-                      >
-                        D
-                      </button>
                     </Link>
                   </div>
                 : // Never found: display black-and-white asset shadow
                   <>
                     <img
-                      src={`./assets/sprites/${i+startIndex}.png`}
+                      src={`/assets/sprites/${i+startIndex}.png`}
                       className="size-full object-cover rounded-lg brightness-0"
                     />
                     <div className="absolute size-12 bg-blue-600 mix-blend-screen rounded-lg"></div>

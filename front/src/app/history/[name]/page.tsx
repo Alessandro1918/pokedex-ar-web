@@ -11,8 +11,9 @@ type Props = {
 export default async function Details({ params }: Props) {
 
   const { name } = await params
+  const nameFormated = decodeURI(name)
   const names = [...gen1, ...gen2]
-  const index = names.indexOf(decodeURI(name))
+  const index = names.indexOf(nameFormated)
   // console.log(index)
 
   const data = await getPokemonData(index)
@@ -27,9 +28,9 @@ export default async function Details({ params }: Props) {
       
       {/* content: */}
       <div className="z-10 flex flex-col items-center">
-        <Delete />
-        <h1 className="text-4xl">{decodeURI(name)}</h1>
-        <Image name={decodeURI(name)}/>
+        <Delete name={nameFormated}/>
+        <h1 className="text-4xl">{nameFormated}</h1>
+        <Image name={nameFormated}/>
         <div className="mt-3 py-0.5 px-6 flex flex-row gap-3 bg-gradient-to-r from-zinc-400 via-zinc-200 to-zinc-400 shadow-gray-600 shadow-md rounded-xs">
           <h3 className="capitalize text-sm">{`#${data.id}`}</h3>
           <h3 className="capitalize text-sm">{data.type}</h3>
