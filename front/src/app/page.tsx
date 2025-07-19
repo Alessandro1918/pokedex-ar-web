@@ -1,6 +1,7 @@
 "use client"
 import { useState, useRef } from "react"
-import { History } from "./components/history"
+import { useRouter } from "next/navigation"
+import { saveHistory } from "./functions/history"
 
 type PredictionResponse = {
   prediction: {
@@ -9,19 +10,14 @@ type PredictionResponse = {
   }
 }
 
-export type LocalStorageItem = {
-  name: string,
-  date: string,
-  image: string
-}
-
 export default function Home() {
+
+  const router = useRouter()
 
   const inputRef = useRef<HTMLInputElement>(null)
   const [ selectedFile, setSelectedFile ] = useState<string>()
   const [ result, setResult ] = useState<string | null>(null)
   const [ isLoading, setIsLoading ] = useState(false)
-  const [ historyKey, setHistoryKey ] = useState(0)
 
   function convertToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -63,33 +59,6 @@ export default function Home() {
     })
   }
 
-  function getHistory(): LocalStorageItem[] {
-    const history = localStorage.getItem("history")
-    if (history) {
-      return JSON.parse(history)
-    } else { 
-      return [] 
-    }
-  }
-
-  function saveHistory(name: string, imageAsBase64: string) {
-    const history = getHistory()
-    const index = history.findIndex((e: LocalStorageItem) => e.name == name)
-    const newHistory = [...history]
-    if (index == -1) {
-      newHistory.push({name, date: new Date().toISOString(), image: imageAsBase64})
-    } else {
-      newHistory[index] = {name, date: new Date().toISOString(), image: imageAsBase64}
-    }
-    try {
-      localStorage.setItem("history", JSON.stringify(newHistory))
-    } catch (err: any) {
-      if (err.name == "QuotaExceededError") {
-        throw new Error("507")  // Insufficient Storage
-      }
-    }
-  }
-
   function handleInputFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return
     const file = e.target.files[0]
@@ -128,7 +97,7 @@ export default function Home() {
       const resizedImageAsBase64 = await resizeBase64Image(imageAsBase64)
       // console.log(`resized base64 size: ${Math.floor(Math.ceil(resizedImageAsBase64.length / 4) * 3 / 1024)} kB`)
       saveHistory(label, resizedImageAsBase64)
-      setHistoryKey(historyKey + 1) // force History reload. Will be removed when History is moved to it's own separate page
+      router.push(`/history/${label}`)
     } catch (err: any) {
       switch (err.message) {
         case "400": setResult("Error: No file"); break;
@@ -173,6 +142,24 @@ export default function Home() {
         ID
       </button>
 
+      <button 
+        onClick={() => router.push("/history")}
+        disabled={isLoading}
+        //OBS: Visual transformation to simulate a 3D key press:
+        //1. Button will have a "margin-top" and a "border-bottom";
+        //2. When clicked, shrink "border-bottom" height by half, and lower the button by adding to the "margin-top" this same amount of pixels.
+        className={
+          `w-24 font-bold px-2 py-1 rounded-lg 
+          bg-red-600 hover:bg-red-700 text-white border-red-800 cursor-pointer 
+          disabled:bg-gray-400 disabled:text-gray-600 disabled:border-gray-500 disabled:cursor-default
+           mt-[0px] border-b-[6px]
+           disabled:active:mt-[0px] disabled:active:border-b-[6px] 
+           active:mt-[3px] active:border-b-[3px]`
+        }
+      >
+        History
+      </button>
+
       {
         isLoading &&
         <div role="status">
@@ -187,11 +174,6 @@ export default function Home() {
         result &&
         <h1>{result}</h1>
       }
-
-      <History 
-        key={historyKey} 
-        getHistory={getHistory}
-      />
     </div>
   )
 }

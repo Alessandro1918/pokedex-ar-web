@@ -1,14 +1,11 @@
+"use client"
 import { useState, useEffect } from "react"
-import { LocalStorageItem } from "../page"
-import { Generation } from "./history-generation"
+import { getHistory, LocalStorageItem } from "../functions/history"
+import { Generation } from "../components/history-generation"
 import gen1 from "../../../public/data/gen1.json"
 import gen2 from "../../../public/data/gen2.json"
 
-type Props = {
-  getHistory(): LocalStorageItem[]
-}
-
-export function History({ getHistory }: Props) {
+export default function History() {
 
   const [ history, setHistory ] = useState<LocalStorageItem[]>([])
 
@@ -34,7 +31,7 @@ export function History({ getHistory }: Props) {
   // )
 
   return (
-    <div className="h-96 overflow-auto">
+    <div className="mt-8 flex flex-col w-screen h-fit items-center justify-center overflow-auto gap-6">
       <Generation 
         title="Kanto"
         names={gen1}
