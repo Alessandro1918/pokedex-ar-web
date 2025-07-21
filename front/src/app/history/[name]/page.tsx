@@ -1,6 +1,5 @@
 import gen1 from "../../../../public/data/gen1.json"
 import gen2 from "../../../../public/data/gen2.json"
-import { getPokemonData } from "../../functions/getPokemonData"
 import { Image } from "./image"
 import { Delete } from "./delete"
 
@@ -16,7 +15,10 @@ export default async function Details({ params }: Props) {
   const index = names.indexOf(nameFormated)
   // console.log(index)
 
-  const data = await getPokemonData(index)
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BACK_URL}/api/v1/data/${index+1}`
+  )
+  const data = await response.json()
 
   return (
     <div 
@@ -33,7 +35,7 @@ export default async function Details({ params }: Props) {
         <Image name={nameFormated}/>
         <div className="mt-3 py-0.5 px-6 flex flex-row gap-3 bg-gradient-to-r from-zinc-400 via-zinc-200 to-zinc-400 shadow-gray-600 shadow-md rounded-xs">
           <h3 className="capitalize text-sm">{`#${data.id}`}</h3>
-          <h3 className="capitalize text-sm">{data.type}</h3>
+          <h3 className="capitalize text-sm">{data.species}</h3>
           <h3 className="capitalize text-sm">{`Height: ${data.height}m`}</h3>
           <h3 className="capitalize text-sm">{`Weight: ${data.weight}kg`}</h3>
         </div>
