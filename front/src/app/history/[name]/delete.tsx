@@ -1,5 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation"
+import { FaRegTrashAlt } from "react-icons/fa"
 import { getHistory, LocalStorageItem } from "../../functions/history"
 
 type Props = {
@@ -31,7 +32,7 @@ export function Delete({ name }: Props) {
       className="absolute right-4 top-4 cursor-pointer" 
       onClick={() => handleClick()}
     >
-      Delete
+      <FaRegTrashAlt className="size-6"/>
     </button>
   )
 }
