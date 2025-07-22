@@ -33,7 +33,7 @@ export default async function Details({ params }: Props) {
       style={{backgroundImage: `url(/assets/backgrounds/${data.types[0]}.jpg)`, backgroundSize: "cover"}}
     >
       {/* opacity: */}
-      <div className="absolute size-full top-0 right-0 bg-white opacity-35"></div>
+      <div className="absolute w-full h-screen top-0 right-0 bg-white opacity-35"></div>
       
       {/* content: */}
       <div className="z-10 flex flex-col items-center">
