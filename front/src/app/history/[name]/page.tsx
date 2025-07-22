@@ -16,13 +16,18 @@ export default async function Details({ params }: Props) {
   // console.log(index)
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACK_URL}/api/v1/data/${index+1}`
+    `${process.env.NEXT_PUBLIC_BACK_URL}/api/v1/data/${index+1}`,
+    {
+      next: {
+        revalidate: 60 //[s]. Obs: cache will not work on dev mode. Run with "npm run build && npm run start" 
+      },
+    }
   )
   const data = await response.json()
 
   return (
     <div 
-      className="py-12 flex h-screen zbg-[url(/assets/backgrounds/grass.jpg)]"
+      className="py-12 flex justify-center h-screen"  // dinamic background with tailwind's "bg-[url(/assets/backgrounds/grass.jpg)]" will not work
       style={{backgroundImage: `url(/assets/backgrounds/${data.types[0]}.jpg)`, backgroundSize: "cover"}}
     >
       {/* opacity: */}
