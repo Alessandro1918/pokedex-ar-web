@@ -13,7 +13,7 @@ export function Image({ name }: Props) {
   useEffect(() => {
     const history = getHistory()
     const index = history.findIndex((e: LocalStorageItem) => e.name == name)
-    const image = index > -1 ? history[index].image : undefined
+    const image = history[index].image
     setImage(image)
   }, [])
 
