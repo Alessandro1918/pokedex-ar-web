@@ -27,7 +27,7 @@ export function Generation({ title, names, startIndex, history, setHistory }: Pr
           return (
             <div 
               key={i}
-              className="relative flex items-center justify-center size-full bg-slate-400 border-[1px] border-blue-800 rounded-lg"
+              className="relative flex items-center justify-center size-full aspect-square bg-slate-400 border-[1px] border-blue-800 rounded-lg"
             >
               {
                 index > -1
