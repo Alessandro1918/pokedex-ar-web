@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { getHistory, LocalStorageItem } from "../functions/history"
+import { Screen } from "../components/frame/screen"
 import { Generation } from "../components/history-generation"
 import gen1 from "../../../public/data/gen1.json"
 import gen2 from "../../../public/data/gen2.json"
@@ -31,9 +32,9 @@ export default function History() {
   // )
 
   return (
-    <div className="p-3 h-screen w-full mx-auto max-w-full sm:max-w-sm md:max-w-md lg:max-w-lg rounded-2xl bg-gradient-to-r from-red-600 via-red-400 to-red-600 border-2 border-red-800">
-      <div className="p-3 pb-8 h-full w-full rounded-md bg-gradient-to-r from-zinc-400 via-zinc-200 to-zinc-400 border-2 border-zinc-600">
-        <div className="p-2 h-full w-full rounded-md space-y-4 overflow-auto bg-blue-600 border-2 border-blue-800">
+    <div className="pb-6 flex h-screen w-full mx-auto max-w-full sm:max-w-sm md:max-w-md lg:max-w-lg rounded-2xl bg-gradient-to-r from-red-600 via-red-400 to-red-600 border-2 border-red-800">
+      <Screen>
+        <div className="flex-1 h-full w-full rounded-md space-y-4 overflow-auto">
           <Generation 
             title="Kanto"
             names={gen1}
@@ -49,15 +50,7 @@ export default function History() {
             setHistory={setHistory} 
           />
         </div>
-        <div className="p-2 flex flex-row items-center justify-between">
-          <div className="size-4 bg-red-600 border-2 border-black rounded-full"></div>
-          <div className="flex flex-col gap-1">
-            <div className="w-16 h-0.5 bg-zinc-800 rounded-b-4xl"></div>
-            <div className="w-16 h-0.5 bg-zinc-800 rounded-b-4xl"></div>
-            <div className="w-16 h-0.5 bg-zinc-800 rounded-b-4xl"></div>
-          </div>
-        </div>
-      </div>
+      </Screen>
     </div>
   )
 }
