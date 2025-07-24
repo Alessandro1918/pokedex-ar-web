@@ -14,7 +14,9 @@ export function Generation({ title, names, startIndex, history, setHistory }: Pr
   return (
     <div>
 
-      <p>{title}</p>
+      <p className="text-lg font-semibold text-blue-100">
+        {title}
+      </p>
 
       <div className="grid grid-cols-5 gap-2">
 
@@ -25,7 +27,7 @@ export function Generation({ title, names, startIndex, history, setHistory }: Pr
           return (
             <div 
               key={i}
-              className="relative flex items-center justify-center size-12 bg-slate-400 rounded-lg"
+              className="relative flex items-center justify-center size-full bg-slate-400 border-[1px] border-blue-800 rounded-lg"
             >
               {
                 index > -1
@@ -44,7 +46,7 @@ export function Generation({ title, names, startIndex, history, setHistory }: Pr
                       src={`/assets/sprites/${i+startIndex}.png`}
                       className="size-full object-cover rounded-lg brightness-0"
                     />
-                    <div className="absolute size-12 bg-blue-600 mix-blend-screen rounded-lg"></div>
+                    <div className="absolute size-full bg-blue-600 mix-blend-screen rounded-lg"></div>
                     <p className="absolute text-xl zfont-bold text-blue-100 opacity-40">
                       { i+startIndex }
                     </p>
