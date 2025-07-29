@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react"
 import { getHistory, LocalStorageItem } from "../functions/history"
 import { Screen } from "../components/frame/screen"
-import { Generation } from "../components/history-generation"
+import { Generation } from "./generation"
+import generations from "../../../public/data/generations.json"
 import gen1 from "../../../public/data/gen1.json"
 import gen2 from "../../../public/data/gen2.json"
 
@@ -36,18 +37,16 @@ export default function History() {
       <Screen>
         <div className="flex flex-col h-full w-full gap-4 overflow-auto">
           <Generation 
-            title="Kanto"
+            title={generations[0].name}
             names={gen1}
-            startIndex={1}
+            startIndex={generations[0].indexStart}
             history={history} 
-            setHistory={setHistory} 
           />
           <Generation 
-            title="Johto"
+            title={generations[1].name}
             names={gen2}
-            startIndex={152}
+            startIndex={generations[1].indexStart}
             history={history} 
-            setHistory={setHistory} 
           />
         </div>
       </Screen>
