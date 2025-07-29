@@ -168,6 +168,24 @@ export default function Home() {
             History
           </button>
 
+          <button 
+            onClick={() => router.push("/stats")}
+            disabled={isLoading}
+            //OBS: Visual transformation to simulate a 3D key press:
+            //1. Button will have a "margin-top" and a "border-bottom";
+            //2. When clicked, shrink "border-bottom" height by half, and lower the button by adding to the "margin-top" this same amount of pixels.
+            className={
+              `w-24 font-bold px-2 py-1 rounded-lg 
+              bg-red-600 hover:bg-red-700 text-white border-red-800 cursor-pointer 
+              disabled:bg-gray-400 disabled:text-gray-600 disabled:border-gray-500 disabled:cursor-default
+              mt-[0px] border-b-[6px]
+              disabled:active:mt-[0px] disabled:active:border-b-[6px] 
+              active:mt-[3px] active:border-b-[3px]`
+            }
+          >
+            Stats
+          </button>
+
           {
             isLoading &&
             <div role="status">
