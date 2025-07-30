@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react"
 import { getHistory, LocalStorageItem } from "../functions/history"
 import { Screen } from "../components/frame/screen"
-import { Generation } from "../components/history-generation"
+import { Generation } from "./generation"
+import generations from "../../../public/data/generations.json"
 import gen1 from "../../../public/data/gen1.json"
 import gen2 from "../../../public/data/gen2.json"
 
@@ -34,20 +35,18 @@ export default function History() {
   return (
     <div className="pb-6 flex h-screen w-full mx-auto max-w-full sm:max-w-sm md:max-w-md lg:max-w-lg rounded-2xl bg-gradient-to-r from-red-600 via-red-400 to-red-600 border-2 border-red-800">
       <Screen>
-        <div className="flex-1 h-full w-full rounded-md space-y-4 overflow-auto">
+        <div className="flex flex-col h-full w-full gap-4 overflow-auto">
           <Generation 
-            title="Kanto"
+            title={generations[0].name}
             names={gen1}
-            startIndex={1}
+            startIndex={generations[0].indexStart}
             history={history} 
-            setHistory={setHistory} 
           />
           <Generation 
-            title="Johto"
+            title={generations[1].name}
             names={gen2}
-            startIndex={152}
+            startIndex={generations[1].indexStart}
             history={history} 
-            setHistory={setHistory} 
           />
         </div>
       </Screen>

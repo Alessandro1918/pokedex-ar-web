@@ -6,20 +6,18 @@ type Props = {
   names: string[],  // ["Chikorita", ...]
   startIndex: number  // 152 (gen 1 had 151 names)
   history: LocalStorageItem[],
-  setHistory: (history: LocalStorageItem[]) => void,
+  // setHistory: (history: LocalStorageItem[]) => void,
 }
 
-export function Generation({ title, names, startIndex, history, setHistory }: Props) {
+export function Generation({ title, names, startIndex, history }: Props) {
 
   return (
     <div>
-
       <p className="text-lg font-semibold text-blue-100">
         {title}
       </p>
 
       <div className="grid grid-cols-5 gap-2">
-
         {names.map((name: string, i: number) => {
 
           const index = history.findIndex((e: LocalStorageItem) => e.name == name)
