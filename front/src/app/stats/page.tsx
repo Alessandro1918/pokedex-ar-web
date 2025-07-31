@@ -219,7 +219,7 @@ export default async function Stats() {
   return (
     <div className="pb-6 flex h-screen w-full mx-auto max-w-full sm:max-w-sm md:max-w-md lg:max-w-lg rounded-2xl bg-gradient-to-r from-red-600 via-red-400 to-red-600 border-2 border-red-800">
       <Screen>
-        <div className="flex flex-col h-full w-full gap-4 overflow-auto">
+        <div className="p-2 flex flex-col h-full w-full gap-4 overflow-auto border-2 border-blue-800">
           <span className="text-4xl font-semibold text-blue-100">
             Encounters
           </span>

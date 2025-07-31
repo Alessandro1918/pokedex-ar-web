@@ -5,6 +5,8 @@ import { saveHistory } from "./functions/history"
 import { Header } from "./components/frame/header"
 import { Screen } from "./components/frame/screen"
 import { Keyboard } from "./components/frame/keyboard"
+import { GlassButton } from "./components/glassButton"
+import { FaBinoculars, FaClock, FaChartBar } from "react-icons/fa"
 
 type PredictionResponse = {
   prediction: {
@@ -114,13 +116,30 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen w-full mx-auto max-w-full sm:max-w-sm md:max-w-md lg:max-w-lg rounded-2xl bg-gradient-to-r from-red-600 via-red-400 to-red-600 border-2 border-red-800">
-
       <Header />
 
       <Screen>
-        <div className="h-full flex flex-col items-center justify-center gap-8">
+        <div className="h-full w-full flex flex-col items-center justify-center gap-8 rounded-md border-2 border-blue-800 bg-[url(/assets/home/1.jpg)] bg-cover bg-bottom">
 
-          <img 
+          <GlassButton
+            dest="/id" 
+            label="ID"
+            icon={<FaBinoculars className="size-6"/>}
+          />
+
+          <GlassButton 
+            dest="/history"
+            label="History"
+            icon={<FaClock className="size-6"/>}
+          />
+
+          <GlassButton 
+            dest="/stats"
+            label="Stats"
+            icon={<FaChartBar className="size-6"/>}
+          />
+
+          {/* <img 
             src={selectedFile}
             className="size-24 aspect-square object-cover bg-gray-300"
           />
@@ -184,7 +203,7 @@ export default function Home() {
             }
           >
             Stats
-          </button>
+          </button> */}
 
           {
             isLoading &&
@@ -204,7 +223,6 @@ export default function Home() {
       </Screen>
 
       <Keyboard />
-      
     </div>
   )
 }
