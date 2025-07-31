@@ -119,7 +119,7 @@ export default function Home() {
       <Header />
 
       <Screen>
-        <div className="h-full w-full flex flex-col items-center justify-center gap-8 rounded-md border-[0px] border-blue-800 bg-[url(/assets/home/1.jpg)] bg-cover bg-bottom">
+        <div className="h-full w-full flex flex-col items-center justify-center gap-8 rounded-md border-[0px] border-blue-800">
 
           <GlassButton
             dest="/id" 
