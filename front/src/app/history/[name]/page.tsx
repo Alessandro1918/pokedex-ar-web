@@ -1,5 +1,6 @@
 import gen1 from "../../../../public/data/gen1.json"
 import gen2 from "../../../../public/data/gen2.json"
+import { Screen } from "../../components/frame/screen"
 import { Image } from "./image"
 import { EncounterViews } from "./encounter-views"
 import { EncounterDate } from "./encounter-date"
@@ -28,38 +29,45 @@ export default async function Details({ params }: Props) {
   const data = await response.json()
 
   return (
-    <div 
-      className="py-12 flex justify-center h-screen"  // dinamic background with tailwind's "bg-[url(/assets/backgrounds/grass.jpg)]" will not work
-      style={{backgroundImage: `url(/assets/backgrounds/${data.types[0]}.jpg)`, backgroundSize: "cover"}}
-    >
-      {/* opacity: */}
-      <div className="absolute w-full h-screen top-0 right-0 bg-white opacity-35"></div>
-      
-      {/* content: */}
-      <div className="z-10 flex flex-col items-center">
-        <Delete name={nameFormated}/>
+    <div className="pb-6 flex h-screen w-full mx-auto max-w-full sm:max-w-sm md:max-w-md lg:max-w-lg rounded-2xl bg-gradient-to-r from-red-600 via-red-400 to-red-600 border-2 border-red-800">
+      <Screen>
+        <div 
+          className="relative flex justify-center h-full"  // dinamic background with tailwind's "bg-[url(/assets/backgrounds/grass.jpg)]" will not work
+          style={{backgroundImage: `url(/assets/backgrounds/${data.types[0]}.jpg)`, backgroundSize: "cover"}}
+        >
+          {/* opacity: */}
+          <div className="absolute size-full bg-white opacity-35"></div>
+          
+          {/* content: */}
+          <div className="z-10 py-2 px-4 flex flex-col gap-2 items-center">
+            <Delete name={nameFormated}/>
 
-        <h1 className="text-4xl">{nameFormated}</h1>
+            <span className="text-4xl">{nameFormated}</span>
 
-        <Image name={nameFormated}/>
+            <Image name={nameFormated}/>
 
-        <div className="flex flex-col gap-3">
-          <div className="mt-3 py-0.5 px-6 flex flex-row gap-3 bg-gradient-to-r from-zinc-400 via-zinc-200 to-zinc-400 shadow-gray-600 shadow-md rounded-xs">
-            <h3 className="capitalize text-sm">{`#${data.id}`}</h3>
-            <h3 className="capitalize text-sm">{data.species}</h3>
-            <h3 className="capitalize text-sm">{`Height: ${data.height}m`}</h3>
-            <h3 className="capitalize text-sm">{`Weight: ${data.weight}kg`}</h3>
-          </div>
-          <div className="flex flex-row justify-between">
-            <EncounterViews viewCount={data.encounters.count}/>
-            <EncounterDate name={nameFormated}/>
+            <div className="mt-1 py-0.5 px-12 text-xs flex flex-col bg-gradient-to-r from-zinc-400 via-zinc-200 to-zinc-400 shadow-gray-600 shadow-md rounded-xs">
+              <div className="flex flex-row gap-3 items-center justify-center">
+                <span className="capitalize">{`#${data.id}`}</span>
+                <span className="capitalize">{data.species}</span>
+              </div>
+              <div className="flex flex-row gap-3 items-center justify-center">
+                <span className="capitalize">{`Height: ${data.height}m`}</span>
+                <span className="capitalize">{`Weight: ${data.weight}kg`}</span>
+              </div>
+            </div>
+
+            <div className="text-sm flex flex-row w-full justify-between">
+              <EncounterViews viewCount={data.encounters.count}/>
+              <EncounterDate name={nameFormated}/>
+            </div>
+
+            <h2 className="text-lg text-justify">
+              {data.description}
+            </h2>
           </div>
         </div>
-
-        <h2 className="mt-8 w-4/5 text-lg text-justify">
-          {data.description}
-        </h2>
-      </div>
+      </Screen>
     </div>
   )
 }
