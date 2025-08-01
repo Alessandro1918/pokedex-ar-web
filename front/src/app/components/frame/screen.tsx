@@ -10,7 +10,7 @@ export function Screen({ children }: Props) {
       className="m-3 p-3 pb-0 flex-1 flex flex-col h-full rounded-md bg-gradient-to-r from-zinc-400 via-zinc-200 to-zinc-400 border-2 border-zinc-600"
       // style={{clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 12% 100%, 0% 94%)"}}
     >
-      <div className="p-2 flex justify-center flex-1 w-full rounded-md space-y-4 overflow-auto bg-blue-600 border-2 border-blue-800">
+      <div className="flex justify-center flex-1 w-full rounded-md space-y-4 overflow-auto bg-[url(/assets/home/1.jpg)] bg-cover bg-bottom">
         { children }
       </div>
 
