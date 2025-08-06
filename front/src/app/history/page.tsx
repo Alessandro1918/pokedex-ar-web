@@ -6,6 +6,7 @@ import { Generation } from "./generation"
 import generations from "../../../public/data/generations.json"
 import gen1 from "../../../public/data/gen1.json"
 import gen2 from "../../../public/data/gen2.json"
+import gen3 from "../../../public/data/gen3.json"
 
 export default function History() {
 
@@ -46,6 +47,12 @@ export default function History() {
             title={generations[1].name}
             names={gen2}
             startIndex={generations[1].indexStart}
+            history={history} 
+          />
+          <Generation 
+            title={generations[2].name}
+            names={gen3}
+            startIndex={generations[2].indexStart}
             history={history} 
           />
         </div>

@@ -7,6 +7,7 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "
 import generations from "../../../public/data/generations.json"
 import gen1 from "../../../public/data/gen1.json"
 import gen2 from "../../../public/data/gen2.json"
+import gen3 from "../../../public/data/gen3.json"
 
 // const chartData = [
 //   { date: "2024-04-01", desktop: 222, mobile: 150 },
@@ -34,7 +35,7 @@ const chartConfig = {
 
 export function ChartBar({ data }: Props) {
 
-  const names = [...gen1, ...gen2]
+  const names = [...gen1, ...gen2, ...gen3]
 
   // const [ activeChart, setActiveChart ] = useState<keyof typeof chartConfig>("count")
   const activeChart = "count"
