@@ -1,5 +1,6 @@
 import gen1 from "../../../../public/data/gen1.json"
 import gen2 from "../../../../public/data/gen2.json"
+import gen3 from "../../../../public/data/gen3.json"
 import { Screen } from "../../components/frame/screen"
 import { Image } from "./image"
 import { EncounterViews } from "./encounter-views"
@@ -14,7 +15,7 @@ export default async function Details({ params }: Props) {
 
   const { name } = await params
   const nameFormated = decodeURI(name)
-  const names = [...gen1, ...gen2]
+  const names = [...gen1, ...gen2, ...gen3]
   const index = names.indexOf(nameFormated)
   // console.log(index)
 

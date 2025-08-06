@@ -1,6 +1,5 @@
 "use client"
 import { useState, useRef } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { IoCameraOutline } from "react-icons/io5"
 import { GrGallery } from "react-icons/gr"
@@ -73,8 +72,8 @@ export default function Id() {
         case "507": alert("Error: No localStorage space available"); break;
         default: alert("Error: Internal server error")
       }
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   function handleInputFileChange(e: React.ChangeEvent<HTMLInputElement>) {
