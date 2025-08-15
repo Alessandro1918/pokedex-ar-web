@@ -1,14 +1,29 @@
+import type { Metadata } from "next"
 import gen1 from "../../../../public/data/gen1.json"
 import gen2 from "../../../../public/data/gen2.json"
 import gen3 from "../../../../public/data/gen3.json"
 import { Screen } from "../../components/frame/screen"
+import { Delete } from "./delete"
 import { Image } from "./image"
 import { EncounterViews } from "./encounter-views"
 import { EncounterDate } from "./encounter-date"
-import { Delete } from "./delete"
 
 type Props = {
   params: Promise<{ name: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { name } = await params
+  const nameFormated = decodeURI(name)
+  const names = [...gen1, ...gen2, ...gen3]
+  const index = names.indexOf(nameFormated)
+  
+  return {
+    title: `${nameFormated} | Pokedex AR`,
+    openGraph: {
+      images: [`/assets/sprites/${index + 1}.png`],
+    },
+  }
 }
 
 export default async function Details({ params }: Props) {
