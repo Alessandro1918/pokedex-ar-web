@@ -1,7 +1,5 @@
 # pokedex-ar-web
 
-Status: 🚧 Em construção 🚧
-
 ## 🚀 Projeto
 Um identificador de imagens de Pokemon! Tire uma foto e descubra mais sobre seu Pokemon preferido!
 </br></br>
