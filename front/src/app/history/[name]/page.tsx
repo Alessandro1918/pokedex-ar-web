@@ -21,7 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${nameFormated} | Pokedex AR`,
     openGraph: {
-      images: [`/assets/sprites/${index + 1}.png`],
+      images: [{
+        url: `/assets/sprites/${index + 1}.png`,
+      }],
     },
   }
 }
