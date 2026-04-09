@@ -1,6 +1,12 @@
 import Link from "next/link"
 import { LocalStorageItem } from "../functions/history"
 
+// Sprites downloaded from https://github.com/PokeAPI/sprites
+// (It could work just by passing the image url instead of saving 300+ image files)
+// https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png
+// https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png
+// https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/red-blue/transparent/25.png
+
 type Props = {
   title: string,  // "Gen 2 - Johto"
   names: string[],  // ["Chikorita", ...]
@@ -42,6 +48,7 @@ export function Generation({ title, names, startIndex, history }: Props) {
                   <>
                     <img
                       src={`/assets/sprites/${i+startIndex}.png`}
+                      // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i+startIndex}.png`}
                       className="size-full object-cover rounded-lg brightness-0"
                     />
                     <div className="absolute size-full bg-blue-600 mix-blend-screen rounded-lg"></div>
