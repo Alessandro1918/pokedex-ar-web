@@ -22,7 +22,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${nameFormated} | Pokedex AR`,
     openGraph: {
       images: [{
-        url: `/assets/sprites/${index + 1}.png`,
+        // url: `/assets/sprites/${index + 1}.png`, // 96 x 96px, too small for whatsapp preview render
+        url: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png`,  // 475 x 475px
+        width: 475,   // It only tells crawlers (WhatsApp, Facebook, etc.) what the size is supposed to be so they don’t have to fetch and inspect it,
+        height: 475,  // without actually upscaling / downscaling the image
       }],
     },
   }
