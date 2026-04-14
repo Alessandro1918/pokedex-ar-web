@@ -17,15 +17,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const nameFormated = decodeURI(name)
   const names = [...gen1, ...gen2, ...gen3]
   const index = names.indexOf(nameFormated)
-  
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${index + 1}`)
+  const result = await response.json()
+  const description = result.flavor_text_entries.find((e: any) => e.language.name == "en").flavor_text
+
   return {
     title: `${nameFormated} | Pokedex AR`,
+    description: description,
     openGraph: {
       images: [{
         // url: `/assets/sprites/${index + 1}.png`, // 96 x 96px, too small for whatsapp preview render
-        url: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png`,  // 475 x 475px
-        width: 475,   // It only tells crawlers (WhatsApp, Facebook, etc.) what the size is supposed to be so they don’t have to fetch and inspect it,
-        height: 475,  // without actually upscaling / downscaling the image
+        // url: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png`,  // 475 x 475px, render aspect big @ whatsapp
+        url: `https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/detail/${String(index + 1).padStart(3, "0")}.png`,  // 215 x 215px
+        width: 215,   // It only tells crawlers (WhatsApp, Facebook, etc.) what the size is supposed to be so they don’t have to fetch and inspect it,
+        height: 215,  // without actually upscaling / downscaling the image
       }],
     },
   }
@@ -40,7 +45,7 @@ export default async function Details({ params }: Props) {
   // console.log(index)
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACK_URL}/api/v1/data/${index+1}`,
+    `${process.env.NEXT_PUBLIC_BACK_URL}/api/v1/data/${index + 1}`,
     {
       next: {
         revalidate: 60 //[s]. Obs: cache will not work on dev mode. Run with "npm run build && npm run start" 
